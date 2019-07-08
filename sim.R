@@ -14,7 +14,7 @@ nest.fate.fn.fixedeffs <- function(n.marked = 200, ni = 3000, nb = 1000, nt = 1,
   
   init <- c(1:n.marked)
   for(i in 1:length(init)){
-    init[i] <- rnbinom(1,84,32) 
+    init[i] <- rnbinom(1,size=84,mu=32) 
   }
   
   n.occasions <- 120  #length of breeding season in days
