@@ -1,0 +1,52 @@
+model{    
+   
+# Priors for predation sources of mortality
+alpha.p ~ dnorm(0,0.001)  #intercept
+beta.p.ex ~ dnorm(0, 0.001)  #exclosure slope
+beta.p.veg ~ dnorm(0, 0.001) #vegetation slope
+    
+#priors for abandonment
+alpha.a ~ dnorm(0,0.001) #intercept
+beta.a.ex ~ dnorm(0,0.001) #exclosure slope
+beta.a.init ~ dnorm(0, 0.001) #nest initiation date slope
+    
+#priors for flooding
+alpha.f ~ dnorm(0,0.001) #intercept
+    
+# Likelihood
+for (i in 1:n) {
+ #linear predictors (Equation 2)
+ #flooding  
+  ctf[i] <- exp(alpha.f)
+
+#predation
+  ctp[i] <- exp(alpha.p + beta.p.ex*ex[i] + beta.p.veg*veg[i])
+
+#abandonment
+  cta[i] <- exp(alpha.a + beta.a.ex*ex[i] + beta.a.init*init[i])
+
+#survival
+  cts[i] <- 1
+
+#Equation 3 denominator
+  den[i] <- ctf[i] + ctp[i] + cta[i] + cts[i]
+
+#Equation 3 daily survival probability 
+  survp[i] <- cts[i]/den[i]
+ 
+#interval probabilities of nest loss (Equation 4)
+#flooding
+  p[i,4] <- ((ctf[i]/(den[i]))/(1 - survp[i]))*(1 - pow(survp[i], interval[i]))
+#abandonment
+  p[i,2] <- ((cta[i]/(den[i]))/(1 - survp[i]))*(1 - pow(survp[i], interval[i])) 
+#flooding
+  p[i,3] <- ((ctp[i]/(den[i]))/(1 - survp[i]))*(1-pow(survp[i], interval[i]))
+
+#interval survival probability
+  p[i,1] <- pow(survp[i], interval[i]) 
+    
+  Fate[i,1:4] ~ dmulti(p[i,] , 1 )
+
+    }
+
+}
