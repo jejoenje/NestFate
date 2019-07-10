@@ -170,7 +170,8 @@ nest.fate.fn.fixedeffs <- function(n.marked = 200, ni = 3000, nb = 1000, nt = 1,
   #vector of season dates
   days <- rep(1:n.occasions, n.marked)
   nestID <- rep(c(1:n.marked), each = n.occasions)
-  site.vec <- c(t(site))  #site ID vector
+  
+  #site.vec <- c(t(site))  #site ID vector                             #### THROWS ERROR - WHERE IS 'site'?
   
   #combine fate histories and covariates into data frame
   nestdata <- as.data.frame(cbind(fate.vec, days, nestID, exclose.vec, veg.vec, init.vec))
@@ -211,7 +212,13 @@ nest.fate.fn.fixedeffs <- function(n.marked = 200, ni = 3000, nb = 1000, nt = 1,
   
   #define function to draw initial values for MCMC chains
   inits <- function() {list(
-    alpha.p = rnorm(1, 0, 1), alpha.a = rnorm(1, 0, 1), alpha.f = rnorm(1,0,1), beta.a.ex = rnorm(1, 0, 1), beta.p.ex = rnorm(1,0,1,), beta.p.veg = rnorm(1,0,1), beta.a.init = rnorm(1,0,1))}
+    alpha.p = rnorm(1, 0, 1), 
+    alpha.a = rnorm(1, 0, 1), 
+    alpha.f = rnorm(1,0,1), 
+    beta.a.ex = rnorm(1, 0, 1), 
+    beta.p.ex = rnorm(1,0,1,), 
+    beta.p.veg = rnorm(1,0,1), 
+    beta.a.init = rnorm(1,0,1))}
   #list of parameters to be monitored
   parameters <- c("alpha.p", "alpha.a", "alpha.f", "beta.a.ex",  "beta.a.init", "beta.p.ex", "beta.p.veg")
   
